@@ -38,7 +38,7 @@ app.get('/todos/:id', (req, res) => {
 
   Todo.findById(id).then((todo) => {
     if (todo) {
-      res.send(todo);
+      res.send({todo});
     } else {
       res.status(404).send('todo id not in db');
     }
