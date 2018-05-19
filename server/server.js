@@ -7,6 +7,7 @@ const {User} = require('./models/user');
 const {ObjectID} = require('mongodb');
 
 const app = express();
+const port = process.end.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -46,8 +47,8 @@ app.get('/todos/:id', (req, res) => {
 
 });
 
-app.listen(3000, () => {
-  console.log('running on 3000..');
+app.listen(port, () => {
+  console.log(`Running on port: ${port}`);
 });
 
 module.exports = {app};
