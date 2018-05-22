@@ -13,6 +13,7 @@ let todos = [{
   text: 'Second test todo'
 }];
 
+//whipes todo db clean, repopulates with two test todo's above
 beforeEach((done) => {
   Todo.remove({}).then(() => {
     return Todo.insertMany(todos);
@@ -123,6 +124,39 @@ describe('DELETE /todos/:id', () => {
       .delete(`/todos/${hexId}`)
       .expect(404)
       .end(done);
+  });
+  it('should return 404 for invalid ObjectID', (done) => {
+    request(app)
+    .delete('/todos/123')
+    .expect(404)
+    .end(done)
+  });
+});
+
+describe('PATCH /todos/:id', () => {
+  it('should edit an existing todo', (done) => {
+    let hexId = todos[1]._id.toHexString();
+    request(app)
+      .patch(`/todos/${hexId}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo._id).toBe(hexId);
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+        Todo.findByIdAndUpdate(hexId).then((todo) => {
+          expect(todo._id.toHexString()).toBe(hexId);
+          done();
+        }).catch((e) => done(e));
+      });
+    });
+    it('should return 404 if no todo was found', (done) => {
+      request(app)
+      .patch(`/todos/${new ObjectID}`)
+      .expect(404)
+      .end(done)
   });
   it('should return 404 for invalid ObjectID', (done) => {
     request(app)
